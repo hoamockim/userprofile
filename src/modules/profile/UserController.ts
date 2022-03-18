@@ -71,13 +71,11 @@ export class UserController {
     async consumSignUpEvent(@Payload()message: any){
         const authenData = message.value.payload
         await this.userService.register(authenData.email, authenData.password)
-        console.log('[KAKFA-CONSUMER] Print message after receiving: ', authenData)
     }
  
     @MessagePattern("metax.auth.event", Transport.KAFKA)
     async consumSignInEvent(@Payload()message: any){
         const authenData = message.value.payload as AuthenPayload
         await this.userService.trakingSignin(authenData)
-        console.log('[KAKFA-CONSUMER] Print message after receiving: ', authenData)
     }
 }

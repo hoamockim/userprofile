@@ -48,7 +48,7 @@ export class UserService {
         userInfo.usercode = StringUtil.generateRandom(22)
         userInfo.activecode = StringUtil.generateRandom(30)
       
-        const insertResult = await this.userRepository.insert(userInfo)
+        await this.userRepository.insert(userInfo)
         this.trackingRepository.insert({usercode: userInfo.usercode, email: userInfo.email})
         await this.trackingAccountStatistic(true, false, false)
         
@@ -70,16 +70,17 @@ export class UserService {
             //Auto register and set active for firstly sign-in via third party such as facebook, google 
             userInfo = new UserInfo()
             userInfo.email = accountInfo.email
+            //default password
             userInfo.password = await bcrypt.hash("No@passWord08!", 10);
             userInfo.registertype = accountInfo.type
             userInfo.usercode = StringUtil.generateRandom(22)
             userInfo.activecode = StringUtil.generateRandom(30)
             userInfo.isActive = true
-            const insertResult = await this.userRepository.insert(userInfo)
+            await this.userRepository.insert(userInfo)
             await this.pushServiceResult(process.env.ACCOUNT_STATUS_EVENT, Susscess, "", 
             { userCode: userInfo.usercode, activecode: userInfo.activecode, status: RegisterStatus.NOTNEEDACTIVE })
         }
-        //todo: get tracking from redis
+       
         let userTracking = await this.trackingRepository.findOne({where: {usercode: userInfo.usercode}})
         if (!userTracking){
             userTracking = new UserTracking()
