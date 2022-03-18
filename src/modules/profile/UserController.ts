@@ -61,7 +61,7 @@ export class UserController {
             return ResponseDto.error(HttpStatus.BAD_REQUEST, "Invalid new password")
         }
         if (!StringUtil.isValidPassWord(req.body.newpass)) {
-            return ResponseDto.error(HttpStatus.BAD_REQUEST, "data invallid")
+            return ResponseDto.error(HttpStatus.BAD_REQUEST, "Data invallid")
         }
         const res = await this.userService.changePassword(req.user.userCode, req.body.oldpass, req.body.newpass)
         return ResponseDto.success({...res})
